@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TradeLabs — Join the waitlist</title>
+<meta name="description" content="TradeLabs — crypto, made honest. Join the waitlist for early access." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#111114;--muted:#9A9AA0;--bg:#F5F5F3;--line:#E4E4E1;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--bg);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+    opacity:0;animation:pageIn 1s .05s ease forwards;}
+  @keyframes pageIn{to{opacity:1;}}
+
+  .stage{width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+
+  .mark{width:84px;height:84px;}
+  .mark path{stroke:var(--ink);stroke-width:5;fill:none;stroke-linejoin:round;stroke-linecap:round;
+    stroke-dasharray:260;stroke-dashoffset:260;}
+  .mark .hex{animation:draw 1.2s .35s cubic-bezier(.4,0,.2,1) forwards;}
+  .mark .pls{animation:draw 1s 1.15s ease forwards;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+
+  .word{font-size:42px;font-weight:800;letter-spacing:-.035em;margin-top:24px;opacity:0;transform:translateY(12px);
+    animation:rise .8s 1.8s cubic-bezier(.2,.7,.2,1) forwards;}
+  .word span{font-weight:400;}
+  .tag{font-size:16px;color:var(--muted);font-weight:500;margin-top:10px;opacity:0;transform:translateY(10px);
+    animation:rise .8s 2.15s ease forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+
+  .form{width:100%;margin-top:34px;opacity:0;transform:translateY(12px);animation:rise .8s 2.55s ease forwards;}
+  .field{display:flex;gap:8px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:7px;
+    box-shadow:0 10px 30px rgba(20,20,40,.05);transition:border-color .2s;}
+  .field:focus-within{border-color:#c9c9c6;}
+  .field input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-family:inherit;font-size:15.5px;
+    color:var(--ink);padding:13px 14px;}
+  .field input::placeholder{color:#A9A9AE;}
+  .field button{border:0;background:var(--ink);color:#fff;font-family:inherit;font-size:14.5px;font-weight:600;
+    padding:0 22px;border-radius:11px;cursor:pointer;white-space:nowrap;transition:transform .12s,opacity .2s;}
+  .field button:hover{opacity:.92;}
+  .field button:active{transform:scale(.97);}
+  .field button:disabled{opacity:.5;cursor:default;}
+  .micro{font-size:13px;color:var(--muted);margin-top:14px;font-weight:500;}
+  .micro.err{color:#E0524E;}
+
+  .done{width:100%;margin-top:34px;opacity:0;transform:translateY(10px);display:none;}
+  .done.show{display:block;animation:rise .7s ease forwards;}
+  .done .check{width:54px;height:54px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+  .done .check svg{width:26px;height:26px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .done .dt{font-size:19px;font-weight:700;}
+  .done .ds{font-size:14px;color:var(--muted);margin-top:6px;font-weight:500;}
+</style>
+</head>
+<body>
+  <div class="stage">
+    <svg class="mark" viewBox="0 0 120 120"><path class="hex" d="M60 28 L87 44 L87 76 L60 92 L33 76 L33 44 Z"/><path class="pls" d="M40 63 L51 63 L57 49 L64 79 L70 63 L80 63"/></svg>
+    <div class="word">Trade<span>Labs</span></div>
+    <div class="tag">Crypto, made honest.</div>
+
+    <form class="form" id="form" novalidate>
+      <div class="field">
+        <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" aria-label="Email address" />
+        <button id="btn" type="submit">Join the waitlist</button>
+      </div>
+      <div class="micro" id="micro">Be first to get access. No spam — just your invite.</div>
+    </form>
+
+    <div class="done" id="done">
+      <div class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+      <div class="dt">You're on the list.</div>
+      <div class="ds" id="ds">We'll email your invite soon.</div>
+    </div>
+  </div>
+
+<script>
+  // ── GetWaitlist ──────────────────────────────────────────────
+  // 1. Create a waitlist at getwaitlist.com  2. Paste its numeric ID below.
+  // While this is 0, the page runs in demo mode (no real signup).
+  const WAITLIST_ID = 0;
+
+  const form = document.getElementById('form');
+  const email = document.getElementById('email');
+  const btn = document.getElementById('btn');
+  const micro = document.getElementById('micro');
+  const done = document.getElementById('done');
+  const ds = document.getElementById('ds');
+  const valid = (v) => /.+@.+\..+/.test(v);
+
+  function showDone(position){
+    form.style.display = 'none';
+    if (position) ds.textContent = "You're #" + position + " in line.";
+    done.classList.add('show');
+  }
+  function error(msg){
+    micro.textContent = msg; micro.classList.add('err');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const v = email.value.trim();
+    if (!valid(v)) { error('Please enter a real email address.'); email.focus(); return; }
+    micro.classList.remove('err'); micro.textContent = 'Be first to get access. No spam — just your invite.';
+    btn.disabled = true; btn.textContent = 'Joining…';
+    try {
+      let position = null;
+      if (WAITLIST_ID) {
+        const res = await fetch('https://api.getwaitlist.com/api/v1/signup', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: v, waitlist_id: WAITLIST_ID })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data && data.error_code ? data.error_code : 'signup_failed');
+        position = data.priority || data.position || null;
+      } else {
+        throw new Error('waitlist_not_configured');
+      }
+      showDone(position);
+    } catch (err) {
+      btn.disabled = false; btn.textContent = 'Join the waitlist';
+      error(err.message === 'waitlist_not_configured'
+        ? 'Waitlist signups are opening shortly.'
+        : 'Something went wrong. Try again.');
+    }
+  });
+</script>
+</body>
+</html>
