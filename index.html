@@ -84,7 +84,15 @@
   const email = document.getElementById('email');
   const btn = document.getElementById('btn');
   const micro = document.getElementById('micro');
+  const done = document.getElementById('done');
+  const ds = document.getElementById('ds');
   const valid = (v) => /.+@.+\..+/.test(v);
+
+  if (new URLSearchParams(window.location.search).get('confirmed') === '1') {
+    form.style.display = 'none';
+    ds.textContent = "Email confirmed. You're on the TradeLabs waitlist.";
+    done.classList.add('show');
+  }
 
   function error(msg){
     micro.textContent = msg; micro.classList.add('err');
