@@ -62,11 +62,12 @@
     <div class="word">Trade<span>Labs</span></div>
     <div class="tag">Crypto, made honest.</div>
 
-    <form class="form" id="form" novalidate>
+    <form class="form" id="form" action="https://buttondown.com/api/emails/embed-subscribe/tradelabs" method="post" novalidate>
       <div class="field">
-        <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" aria-label="Email address" />
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" aria-label="Email address" />
         <button id="btn" type="submit">Join the waitlist</button>
       </div>
+      <input type="hidden" name="embed" value="1" />
       <div class="micro" id="micro">Be first to get access. No spam — just your invite.</div>
     </form>
 
@@ -78,54 +79,27 @@
   </div>
 
 <script>
-  // ── GetWaitlist ──────────────────────────────────────────────
-  // 1. Create a waitlist at getwaitlist.com  2. Paste its numeric ID below.
-  // While this is 0, the page runs in demo mode (no real signup).
-  const WAITLIST_ID = 0;
-
+  // Buttondown stores signups and sends the required confirmation email.
   const form = document.getElementById('form');
   const email = document.getElementById('email');
   const btn = document.getElementById('btn');
   const micro = document.getElementById('micro');
-  const done = document.getElementById('done');
-  const ds = document.getElementById('ds');
   const valid = (v) => /.+@.+\..+/.test(v);
 
-  function showDone(position){
-    form.style.display = 'none';
-    if (position) ds.textContent = "You're #" + position + " in line.";
-    done.classList.add('show');
-  }
   function error(msg){
     micro.textContent = msg; micro.classList.add('err');
   }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  form.addEventListener('submit', (e) => {
     const v = email.value.trim();
-    if (!valid(v)) { error('Please enter a real email address.'); email.focus(); return; }
+    if (!valid(v)) {
+      e.preventDefault();
+      error('Please enter a real email address.');
+      email.focus();
+      return;
+    }
     micro.classList.remove('err'); micro.textContent = 'Be first to get access. No spam — just your invite.';
     btn.disabled = true; btn.textContent = 'Joining…';
-    try {
-      let position = null;
-      if (WAITLIST_ID) {
-        const res = await fetch('https://api.getwaitlist.com/api/v1/signup', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: v, waitlist_id: WAITLIST_ID })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data && data.error_code ? data.error_code : 'signup_failed');
-        position = data.priority || data.position || null;
-      } else {
-        throw new Error('waitlist_not_configured');
-      }
-      showDone(position);
-    } catch (err) {
-      btn.disabled = false; btn.textContent = 'Join the waitlist';
-      error(err.message === 'waitlist_not_configured'
-        ? 'Waitlist signups are opening shortly.'
-        : 'Something went wrong. Try again.');
-    }
   });
 </script>
 </body>
