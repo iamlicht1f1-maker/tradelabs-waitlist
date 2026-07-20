@@ -89,7 +89,7 @@
   .submit:disabled { cursor: wait; opacity: .55; }
   .micro { margin: 14px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; text-align: center; }
   .micro.error { color: var(--danger); }
-  .honeypot { position: absolute; left: -9999px; }
+  .honeypot, .submission-frame { position: absolute; width: 1px; height: 1px; left: -9999px; border: 0; }
   .result { display: none; margin-top: 38px; }
   .result.visible { display: block; }
   .result-mark {
@@ -119,7 +119,7 @@
     <h1>TradeLabs</h1>
     <p class="tagline">Crypto, made honest.</p>
 
-    <form class="form" id="waitlist-form" action="https://buttondown.com/api/emails/embed-subscribe/tradelabs" method="post" novalidate>
+    <form class="form" id="waitlist-form" action="https://buttondown.com/api/emails/embed-subscribe/tradelabs" method="post" target="buttondown-submit-frame" novalidate>
       <div class="name-grid">
         <div class="control">
           <label for="first_name">First name</label>
@@ -139,6 +139,7 @@
       <button class="submit" id="submit-button" type="submit">Join the waitlist</button>
       <p class="micro" id="form-message">Be among the first 100. No spam—just important TradeLabs updates.</p>
     </form>
+    <iframe class="submission-frame" id="submission-frame" name="buttondown-submit-frame" title="Signup response" aria-hidden="true"></iframe>
 
     <section class="result" id="result" aria-live="polite">
       <div class="result-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg></div>
@@ -157,7 +158,9 @@
   const result = document.getElementById('result');
   const resultTitle = document.getElementById('result-title');
   const resultCopy = document.getElementById('result-copy');
+  const submissionFrame = document.getElementById('submission-frame');
   const params = new URLSearchParams(window.location.search);
+  let submissionStarted = false;
 
   function showResult(title, copy) {
     form.hidden = true;
@@ -192,6 +195,13 @@
     formMessage.textContent = 'Submitting your place…';
     submitButton.disabled = true;
     submitButton.textContent = 'Joining…';
+    submissionStarted = true;
+  });
+
+  submissionFrame.addEventListener('load', () => {
+    if (!submissionStarted) return;
+    submissionStarted = false;
+    showResult('Successfully subscribed.', 'Your signup was received. Check your inbox for the TradeLabs confirmation email.');
   });
 </script>
 </body>
