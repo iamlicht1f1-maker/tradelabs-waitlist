@@ -7,107 +7,191 @@
 <meta name="description" content="TradeLabs — crypto, made honest. Join the waitlist for early access." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#111114;--muted:#9A9AA0;--bg:#F5F5F3;--line:#E4E4E1;}
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html,body{height:100%;}
-  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--bg);
-    display:flex;align-items:center;justify-content:center;padding:24px;
-    opacity:0;animation:pageIn 1s .05s ease forwards;}
-  @keyframes pageIn{to{opacity:1;}}
-
-  .stage{width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;text-align:center;}
-
-  .mark{width:84px;height:84px;}
-  .mark path{stroke:var(--ink);stroke-width:5;fill:none;stroke-linejoin:round;stroke-linecap:round;
-    stroke-dasharray:260;stroke-dashoffset:260;}
-  .mark .hex{animation:draw 1.2s .35s cubic-bezier(.4,0,.2,1) forwards;}
-  .mark .pls{animation:draw 1s 1.15s ease forwards;}
-  @keyframes draw{to{stroke-dashoffset:0;}}
-
-  .word{font-size:42px;font-weight:800;letter-spacing:-.035em;margin-top:24px;opacity:0;transform:translateY(12px);
-    animation:rise .8s 1.8s cubic-bezier(.2,.7,.2,1) forwards;}
-  .word span{font-weight:400;}
-  .tag{font-size:16px;color:var(--muted);font-weight:500;margin-top:10px;opacity:0;transform:translateY(10px);
-    animation:rise .8s 2.15s ease forwards;}
-  @keyframes rise{to{opacity:1;transform:none;}}
-
-  .form{width:100%;margin-top:34px;opacity:0;transform:translateY(12px);animation:rise .8s 2.55s ease forwards;}
-  .field{display:flex;gap:8px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:7px;
-    box-shadow:0 10px 30px rgba(20,20,40,.05);transition:border-color .2s;}
-  .field:focus-within{border-color:#c9c9c6;}
-  .field input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-family:inherit;font-size:15.5px;
-    color:var(--ink);padding:13px 14px;}
-  .field input::placeholder{color:#A9A9AE;}
-  .field button{border:0;background:var(--ink);color:#fff;font-family:inherit;font-size:14.5px;font-weight:600;
-    padding:0 22px;border-radius:11px;cursor:pointer;white-space:nowrap;transition:transform .12s,opacity .2s;}
-  .field button:hover{opacity:.92;}
-  .field button:active{transform:scale(.97);}
-  .field button:disabled{opacity:.5;cursor:default;}
-  .micro{font-size:13px;color:var(--muted);margin-top:14px;font-weight:500;}
-  .micro.err{color:#E0524E;}
-
-  .done{width:100%;margin-top:34px;opacity:0;transform:translateY(10px);display:none;}
-  .done.show{display:block;animation:rise .7s ease forwards;}
-  .done .check{width:54px;height:54px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
-  .done .check svg{width:26px;height:26px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;}
-  .done .dt{font-size:19px;font-weight:700;}
-  .done .ds{font-size:14px;color:var(--muted);margin-top:6px;font-weight:500;}
+  :root {
+    --canvas: #F4F4F6;
+    --surface: #FFFFFF;
+    --elevated: #FAFAFB;
+    --silver-1: #E8E8EC;
+    --silver-2: #D1D1D6;
+    --silver-3: #A1A1AA;
+    --text: #18181B;
+    --muted: #71717A;
+    --accent: #111111;
+    --success: #22C55E;
+    --danger: #EF4444;
+    --info: #3B82F6;
+  }
+  * { box-sizing: border-box; }
+  html { min-height: 100%; background: var(--canvas); }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 32px 20px;
+    display: grid;
+    place-items: center;
+    color: var(--text);
+    background: var(--canvas);
+    font-family: "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input { font: inherit; }
+  .stage { width: min(100%, 520px); text-align: center; }
+  .mark { width: 72px; height: 72px; }
+  .mark path {
+    fill: none;
+    stroke: var(--text);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  h1 {
+    margin: 24px 0 0;
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: clamp(48px, 8vw, 68px);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+  }
+  .tagline { margin: 14px 0 0; color: var(--muted); font-size: 16px; line-height: 1.5; }
+  .form { margin-top: 38px; text-align: left; }
+  .name-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .control { display: grid; gap: 8px; }
+  .control + .control, .name-grid + .control { margin-top: 16px; }
+  label { color: var(--text); font-size: 13px; font-weight: 600; }
+  input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid var(--silver-2);
+    border-radius: 8px;
+    outline: none;
+    color: var(--text);
+    background: var(--surface);
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+  }
+  input::placeholder { color: var(--silver-3); }
+  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(17,17,17,.08); }
+  .submit {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 20px;
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    color: var(--surface);
+    background: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 160ms ease;
+  }
+  .submit:hover { opacity: .9; }
+  .submit:disabled { cursor: wait; opacity: .55; }
+  .micro { margin: 14px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; text-align: center; }
+  .micro.error { color: var(--danger); }
+  .honeypot { position: absolute; left: -9999px; }
+  .result { display: none; margin-top: 38px; }
+  .result.visible { display: block; }
+  .result-mark {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 18px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--text);
+    border-radius: 50%;
+  }
+  .result-mark svg { width: 24px; height: 24px; fill: none; stroke: var(--text); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .result h2 { margin: 0; font-family: "Instrument Serif", Georgia, serif; font-size: 34px; font-weight: 400; letter-spacing: -.025em; }
+  .result p { margin: 10px auto 0; max-width: 430px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  @media (max-width: 520px) {
+    body { padding: 28px 18px; align-items: start; }
+    .stage { padding-top: 24px; }
+    .name-grid { grid-template-columns: 1fr; gap: 16px; }
+    .name-grid .control + .control { margin-top: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
 </style>
 </head>
 <body>
-  <div class="stage">
-    <svg class="mark" viewBox="0 0 120 120"><path class="hex" d="M60 28 L87 44 L87 76 L60 92 L33 76 L33 44 Z"/><path class="pls" d="M40 63 L51 63 L57 49 L64 79 L70 63 L80 63"/></svg>
-    <div class="word">Trade<span>Labs</span></div>
-    <div class="tag">Crypto, made honest.</div>
+  <main class="stage">
+    <svg class="mark" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 28 87 44v32L60 92 33 76V44Z"/><path d="M40 63h11l6-14 7 30 6-16h10"/></svg>
+    <h1>TradeLabs</h1>
+    <p class="tagline">Crypto, made honest.</p>
 
-    <form class="form" id="form" action="https://buttondown.com/api/emails/embed-subscribe/tradelabs" method="post" novalidate>
-      <div class="field">
-        <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" aria-label="Email address" />
-        <button id="btn" type="submit">Join the waitlist</button>
+    <form class="form" id="waitlist-form" action="https://buttondown.com/api/emails/embed-subscribe/tradelabs" method="post" novalidate>
+      <div class="name-grid">
+        <div class="control">
+          <label for="first_name">First name</label>
+          <input id="first_name" name="metadata__first_name" type="text" autocomplete="given-name" placeholder="Alex" maxlength="80" required />
+        </div>
+        <div class="control">
+          <label for="last_name">Last name</label>
+          <input id="last_name" name="metadata__last_name" type="text" autocomplete="family-name" placeholder="Morgan" maxlength="80" required />
+        </div>
       </div>
+      <div class="control">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" maxlength="254" required />
+      </div>
+      <input class="honeypot" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
       <input type="hidden" name="embed" value="1" />
-      <div class="micro" id="micro">Be first to get access. No spam — just your invite.</div>
+      <button class="submit" id="submit-button" type="submit">Join the waitlist</button>
+      <p class="micro" id="form-message">Be among the first 100. No spam—just important TradeLabs updates.</p>
     </form>
 
-    <div class="done" id="done">
-      <div class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
-      <div class="dt">You're on the list.</div>
-      <div class="ds" id="ds">We'll email your invite soon.</div>
-    </div>
-  </div>
+    <section class="result" id="result" aria-live="polite">
+      <div class="result-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg></div>
+      <h2 id="result-title">Check your inbox.</h2>
+      <p id="result-copy">One step remains: confirm your email to reserve your early-access place.</p>
+    </section>
+  </main>
 
 <script>
-  // Buttondown stores signups and sends the required confirmation email.
-  const form = document.getElementById('form');
+  const form = document.getElementById('waitlist-form');
+  const firstName = document.getElementById('first_name');
+  const lastName = document.getElementById('last_name');
   const email = document.getElementById('email');
-  const btn = document.getElementById('btn');
-  const micro = document.getElementById('micro');
-  const done = document.getElementById('done');
-  const ds = document.getElementById('ds');
-  const valid = (v) => /.+@.+\..+/.test(v);
+  const submitButton = document.getElementById('submit-button');
+  const formMessage = document.getElementById('form-message');
+  const result = document.getElementById('result');
+  const resultTitle = document.getElementById('result-title');
+  const resultCopy = document.getElementById('result-copy');
+  const params = new URLSearchParams(window.location.search);
 
-  if (new URLSearchParams(window.location.search).get('confirmed') === '1') {
-    form.style.display = 'none';
-    ds.textContent = "Email confirmed. You're on the TradeLabs waitlist.";
-    done.classList.add('show');
+  function showResult(title, copy) {
+    form.hidden = true;
+    resultTitle.textContent = title;
+    resultCopy.textContent = copy;
+    result.classList.add('visible');
   }
 
-  function error(msg){
-    micro.textContent = msg; micro.classList.add('err');
+  if (params.get('confirmed') === '1') {
+    const name = (params.get('first_name') || '').trim();
+    showResult(name ? `You’re confirmed, ${name}.` : 'You’re confirmed.', 'Your TradeLabs early-access place is reserved. We’ll email you when access opens.');
+  } else if (params.get('pending') === '1') {
+    showResult('Check your inbox.', 'One step remains: confirm your email to reserve your early-access place.');
+  } else if (params.get('waitlisted') === '1') {
+    showResult('You’re on the waitlist.', 'The first 100 places are currently reserved. We’ll contact you if another early-access place opens.');
   }
 
-  form.addEventListener('submit', (e) => {
-    const v = email.value.trim();
-    if (!valid(v)) {
-      e.preventDefault();
-      error('Please enter a real email address.');
-      email.focus();
-      return;
-    }
-    micro.classList.remove('err'); micro.textContent = 'Be first to get access. No spam — just your invite.';
-    btn.disabled = true; btn.textContent = 'Joining…';
+  function fail(message, field) {
+    formMessage.textContent = message;
+    formMessage.classList.add('error');
+    field.focus();
+  }
+
+  form.addEventListener('submit', (event) => {
+    const first = firstName.value.trim();
+    const last = lastName.value.trim();
+    const address = email.value.trim();
+    if (!first) { event.preventDefault(); fail('Please enter your first name.', firstName); return; }
+    if (!last) { event.preventDefault(); fail('Please enter your last name.', lastName); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) { event.preventDefault(); fail('Please enter a valid email address.', email); return; }
+    formMessage.classList.remove('error');
+    formMessage.textContent = 'Submitting your place…';
+    submitButton.disabled = true;
+    submitButton.textContent = 'Joining…';
   });
 </script>
 </body>
